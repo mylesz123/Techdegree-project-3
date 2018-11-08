@@ -238,7 +238,7 @@ function validate(){//if error show span if no error keep it hidden
   $('#emailp').on('change',createListener(isValidEmail));
   $('#cc-num').on('change',createListener(isValidCC));
   $('#zip').on('change',createListener(isValidZip));
-  $('#cvv').on('change',createListener(isValidCVC));
+  $('#cvv').on('input',createListener(isValidCVC));
   $('.activities span').show();
 }
 validate();
@@ -301,9 +301,27 @@ $("form").on('submit', function(e){
       let cardNumber = $('#cc-num').val();//card number
       let zip = $('#zip').val();
       let cvv = $('#cvv').val();
-      if( cardNumber === '' || zip === '' || cvv === ''){
+      // const notValidCC =
+      if( cardNumber === '' || cardNumber.length < 13 || cardNumber.length > 16){
         e.preventDefault();
         alert('Must enter card info');
+      }
+      else{//if 13-16 digits
+        return Valid
+      }
+      if (zip === '' || zip.length !== 5){
+        e.preventDefault();
+        alert('Enter 5 digit zip');
+      }
+      else{
+        return Valid
+      }
+      if (cvv === '' || cvv.length !== 3){
+        e.preventDefault();
+        alert('Enter 3 digit cvv found on back of card');
+      }
+      else{
+        return Valid
       }
     }
 });
