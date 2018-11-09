@@ -1,5 +1,6 @@
 console.log('hi ');
 //**** job role section, show and hide text area ****//
+let Valid = false; //global valid var to apply to validation
 let textArea = $('#other-title').hide();
 
 $('#title').change( function(e){ //idea from stackoverflow from user Gabe; https://stackoverflow.com/questions/9525282/how-to-show-hide-textarea-based-on-select-in-jquery/9525358
@@ -8,11 +9,6 @@ $('#title').change( function(e){ //idea from stackoverflow from user Gabe; https
   if (select === 'other' ){//&& jobRole === ''
     textArea.show();//only supposed to show when 'other' option is selected.
     console.log(this);
-    //console.log(jobRole);
-    // $("form").submit(function(e){
-    //   e.preventDefault();
-    //   alert('Please describe job role');
-    // });
   }
   else{
     textArea.hide();
@@ -150,11 +146,6 @@ $(paymentChange).on('change', function(e){//if payment changes
     $('#credit-card').show();
     $('#paypal').hide();
     $('#bitcoin').hide();
-
-//     make sure the user has supplied a Credit Card number, a Zip Code, and a 3 number CVV value before the form can be submitted.
-// Credit Card field should only accept a number between 13 and 16 digits.
-// The Zip Code field should accept a 5-digit number.
-// The CVV should only accept a number that is exactly 3 digits long.
   }
   else if(select !== 'Credit Card'){
     $('#credit-card').hide();
@@ -236,8 +227,8 @@ function validate(){//if error show span if no error keep it hidden
   $('span').hide();
   $('#named').on("input", nameListener(isValidName));//special
   $('#emailp').on('change',createListener(isValidEmail));
-  $('#cc-num').on('change',createListener(isValidCC));
-  $('#zip').on('change',createListener(isValidZip));
+  $('#cc-num').on('input',createListener(isValidCC));
+  $('#zip').on('input',createListener(isValidZip));
   $('#cvv').on('input',createListener(isValidCVC));
   $('.activities span').show();
 }
@@ -246,7 +237,7 @@ validate();
 //****ALERTS TO PREVENT SUBMISSION****//
 
 $("form").on('submit', function(e){
-  let Valid = true;
+
   let name = $('#named').val();
   let email = $('#emailp').val();
   //let jobRole = $('#title').val();//job role
@@ -292,6 +283,10 @@ $("form").on('submit', function(e){
         return true;
       }
 //PAYMENTS
+// make sure the user has supplied a Credit Card number, a Zip Code, and a 3 number CVV value before the form can be submitted.
+// Credit Card field should only accept a number between 13 and 16 digits.
+// The Zip Code field should accept a 5-digit number.
+// The CVV should only accept a number that is exactly 3 digits long.
     if(paySelect === 'Select Payment Method'){
       e.preventDefault();
       alert('Please select payment method');
@@ -301,27 +296,28 @@ $("form").on('submit', function(e){
       let cardNumber = $('#cc-num').val();//card number
       let zip = $('#zip').val();
       let cvv = $('#cvv').val();
-      // const notValidCC =
-      if( cardNumber === '' || cardNumber.length < 13 || cardNumber.length > 16){
+
+      if( cardNumber === ''){
         e.preventDefault();
         alert('Must enter card info');
       }
-      else{//if 13-16 digits
-        return Valid
-      }
-      if (zip === '' || zip.length !== 5){
+      if( zip === '' || cvv === ''){
         e.preventDefault();
-        alert('Enter 5 digit zip');
+        alert('Must enter card info');
       }
-      else{
-        return Valid
+
+      if($('#cc-num').attr({'maxlength':16, 'minlength':13})){
+        let Valid = true
+        return Valid;
       }
-      if (cvv === '' || cvv.length !== 3){
-        e.preventDefault();
-        alert('Enter 3 digit cvv found on back of card');
+      if($('#zip').attr({'minlength':5, 'maxlength':5})){
+        let Valid = true
+        return Valid;
       }
-      else{
-        return Valid
+      if($('#cvv').attr({'minlength':3, 'maxlength':3})){
+        let Valid = true
+        return Valid;
       }
-    }
+
+    }//end cc selection
 });
