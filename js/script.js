@@ -178,7 +178,6 @@ function isValidCVC(number){
   return /^\d{3}$/.test(number);
 };
 
-
 function isValidEmail(email) {
   return /^[^@]+@[^@.]+\.[a-z]+$/i.test(email);
 }
@@ -225,7 +224,7 @@ function nameListener(validator) {
 /**** EVENT LISTENERS ****/
 function validate(){//if error show span if no error keep it hidden
   $('span').hide();
-  $('#named').on("input", nameListener(isValidName));//special
+  $('#named').on("focusout input", nameListener(isValidName));//special
   $('#emailp').on('change',createListener(isValidEmail));
   $('#cc-num').on('input',createListener(isValidCC));
   $('#zip').on('input',createListener(isValidZip));
@@ -252,15 +251,20 @@ $("form").on('submit', function(e){
 
     if(name === ''){
       e.preventDefault();
-      $('#named').append(`<span class="redWarning"> Name must be filled out </span>`);
-      $('.redWarning').css('color', 'red');
       alert("Name must be filled out");
       return false;
     }
+
+//email cant be blank or invalid
     if(email === ''){
+      //$('#emailp').attr({placeholder: "Enter valid email"});
       e.preventDefault();
       alert("Please enter valid email");
       return false;
+    }
+    //if email span is :visible then $('#emailp').attr({placeholder="Enter valid email"});
+    if($("#emailp span").is(":visible")){
+      $('#emailp').attr({placeholder: "Enter valid email"});
     }
     if(select == 'Other' && other === ''){//check if job role = Other is selected and if job role description is blank, then run error
       console.log(e.target);
@@ -277,11 +281,12 @@ $("form").on('submit', function(e){
     let n = $( "input:checked" ).length;
     console.log(n);
     console.log(this);
-      if (n<1) {
-        e.preventDefault();
-        alert('Select at least one activity');
-        return true;
-      }
+    if (n<1) {
+      e.preventDefault();
+      alert('Select at least one activity');
+      return true;
+    }
+    
 //PAYMENTS
 // make sure the user has supplied a Credit Card number, a Zip Code, and a 3 number CVV value before the form can be submitted.
 // Credit Card field should only accept a number between 13 and 16 digits.
